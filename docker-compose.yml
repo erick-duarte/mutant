@@ -1,4 +1,4 @@
-version: '3.9'
+version: '2.1'
 services:
   db:
     build: ./mysql
@@ -16,6 +16,8 @@ services:
     volumes:
       - ./mysql/conf.d/custom.cnf:/etc/mysql/conf.d/custom.cnf
       - ./mysql/data:/var/lib/mysql:rw
+    ports:
+      - "8181:3306"
 
   phpmyadmin:
     restart: unless-stopped
@@ -27,5 +29,7 @@ services:
       - PMA_HOSTS=db
       - PMA_USER=root
       - PMA_PASSWORD=root
+    ports:
+      - 8282:80
     volumes:
       - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
