@@ -1,0 +1,35 @@
+version: '2.1'
+services:
+  db:
+    build: ./mysql
+    restart: unless-stopped
+    deploy:
+      mode: global
+    mem_limit: 2048M
+    mem_reservation: 512M
+    cpus: 1
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: database
+    volumes:
+      - ./mysql/conf.d/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./mysql/data:/var/lib/mysql:rw
+    ports:
+      - "8181:3306"
+
+  phpmyadmin:
+    restart: unless-stopped
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=db
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    ports:
+      - 8282:80
+    volumes:
+      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
