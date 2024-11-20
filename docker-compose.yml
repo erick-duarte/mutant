@@ -3,11 +3,11 @@ services:
   db:
     build: ./mysql
     restart: unless-stopped
-    deploy:
-      mode: global
-    mem_limit: 2048M
-    mem_reservation: 512M
-    cpus: 1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
@@ -21,7 +21,7 @@ services:
 
   phpmyadmin:
     restart: unless-stopped
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - db
     environment:
